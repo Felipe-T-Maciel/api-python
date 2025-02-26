@@ -1,14 +1,8 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from sqlalchemy import Column, ForeignKey, Integer, String, Table, ARRAY
 from sqlalchemy.orm import relationship
 from app.database import Base
+from app.models.projects.Project_document import Project_Document
 import bcrypt
-
-friends = Table(
-    "friends",
-    Base.metadata,
-    Column("user_id", Integer, ForeignKey("user.id"), primary_key=True),
-    Column("friend_id", Integer, ForeignKey("user.id"), primary_key=True)
-)
 
 class User(Base):
   __tablename__ = "user"
@@ -17,18 +11,20 @@ class User(Base):
   username = Column(String, unique=True, nullable=False)
   password = Column(String, nullable=False)
   email = Column(String, nullable=False)
+  friends = Column(ARRAY(Integer))
+  invites = Column(ARRAY(Integer))
+  
+  teams = []
+  my_friends = []
+  projects_videos = []
+  projects_paints = []
+  
   friends = relationship(
         "User",
         secondary=friends,
         primaryjoin=id == friends.c.user_id,
         secondaryjoin=id == friends.c.friend_id,
         backref="friends_list"
-  )
-  projects_documents = Table(
-    "projects_document",
-    Base.metadata,
-    Column("user_id", Integer, ForeignKey("user.id"), primary_key=True),
-    Column("project_id", Integer, ForeignKey("project.id"), primary_key=True)
   )
   
   def encode_pass(password:String):
