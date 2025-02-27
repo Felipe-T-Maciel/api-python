@@ -1,12 +1,12 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, Table
-from app.database import Base
-from sqlalchemy.orm import relationship
+from app.config.database import Base
 
 
 class Project_Video(Base):
   __tablename__ = "project_video"
   id = Column(Integer, autoincrement=True, primary_key=True, index=True)
   name = Column(String, nullable=False)
+  type = Column(String, nullable=False, insert_default="Video")
   
   projects_videos = Table(
     "projects_videos_User",
